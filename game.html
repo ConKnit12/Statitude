@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live MLB Game | Statitude</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="game-page-body">
+  <header class="game-topbar">
+    <a href="#" class="back-link" id="gameBackLink">← Back</a>
+    <h1 id="gameTitle" class="game-title">Loading game…</h1>
+  </header>
+  <main class="game-layout">
+    <section class="live-column">
+      <div id="scoreboard" class="card scoreboard-card"></div>
+      <div id="count" class="card count-card"></div>
+      <div class="live-row">
+        <div class="card matchup-card">
+          <h3 class="card-heading">Current Matchup</h3>
+          <div id="matchup"></div>
+        </div>
+        <div class="card pitch-card">
+          <h3 class="card-heading">Last Pitch</h3>
+          <div id="pitch"></div>
+        </div>
+      </div>
+      <div class="card field-card">
+        <h3 class="card-heading">Field</h3>
+        <div class="field-wrapper">
+          <svg id="field" viewBox="0 0 700 700" width="100%" height="auto" aria-label="Baseball diamond">
+            <defs>
+              <linearGradient id="grassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#2d6b2d"/>
+                <stop offset="100%" stop-color="#3a7a3a"/>
+              </linearGradient>
+              <linearGradient id="dirtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#c4a574"/>
+                <stop offset="100%" stop-color="#a8895e"/>
+              </linearGradient>
+              <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.35"/>
+              </filter>
+            </defs>
+            <rect x="0" y="0" width="700" height="700" fill="#1a2e1a"/>
+            <path d="M350 95 C195 120 80 250 80 360 C80 475 195 575 350 625 C505 575 620 475 620 360 C620 250 505 120 350 95Z" fill="url(#grassGrad)"/>
+            <path d="M350 625 C195 575 80 475 80 360 C80 250 195 120 350 95 C505 120 620 250 620 360 C620 475 505 575 350 625Z" fill="none" stroke="#8b7355" stroke-width="18" opacity="0.85"/>
+            <path d="M80 360 C80 250 195 120 350 95 C505 120 620 250 620 360" fill="none" stroke="#2a2a2a" stroke-width="6"/>
+            <line x1="350" y1="625" x2="80" y2="360" stroke="#f5f5f5" stroke-width="2" opacity="0.9"/>
+            <line x1="350" y1="625" x2="620" y2="360" stroke="#f5f5f5" stroke-width="2" opacity="0.9"/>
+            <path d="M350 625 L200 475 L350 325 L500 475 Z" fill="url(#dirtGrad)"/>
+            <path d="M350 605 L220 475 L350 345 L480 475 Z" fill="#347a34"/>
+            <path d="M350 625 L200 475 L350 325 L500 475 Z" fill="none" stroke="#b8956a" stroke-width="22" stroke-linejoin="round" opacity="0.95"/>
+            <ellipse cx="350" cy="490" rx="28" ry="18" fill="#b8956a"/>
+            <ellipse cx="350" cy="490" rx="22" ry="14" fill="#c4a574"/>
+            <rect x="340" y="485" width="20" height="5" rx="1" fill="#f0f0f0"/>
+            <polygon id="home" points="350,625 338,613 338,600 350,588 362,600 362,613" fill="#f8f8f8" filter="url(#softShadow)"/>
+            <rect id="first" x="490" y="465" width="18" height="18" fill="#f8f8f8" transform="rotate(45 499 474)" filter="url(#softShadow)"/>
+            <rect id="second" x="341" y="316" width="18" height="18" fill="#f8f8f8" transform="rotate(45 350 325)" filter="url(#softShadow)"/>
+            <rect id="third" x="191" y="465" width="18" height="18" fill="#f8f8f8" transform="rotate(45 200 474)" filter="url(#softShadow)"/>
+            <line x1="80" y1="360" x2="80" y2="320" stroke="#e8c547" stroke-width="5"/>
+            <line x1="620" y1="360" x2="620" y2="320" stroke="#e8c547" stroke-width="5"/>
+            <circle id="pitcher" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="c" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="1b" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="2b" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="ss" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="3b" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="lf" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="cf" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="rf" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+            <circle id="batter" r="9" fill="#3b82f6" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="tabs-column">
+      <div class="gameTabs">
+        <button class="gameTabButton active" onclick="showGameTab('boxScoreTab')">Box Score</button>
+        <button class="gameTabButton" onclick="showGameTab('atbatTab')">At-Bats</button>
+      </div>
+
+      <div id="boxScoreTab" class="gameTab active card">
+        <div id="boxScoreContainer"></div>
+      </div>
+
+      <div id="atbatTab" class="gameTab card" style="display:none;">
+        <div class="gameGrid">
+          <div>
+            <h3 class="card-heading">Select Inning</h3>
+            <select id="inningSelect" class="inning-select"></select>
+            <div id="atBatsContainer"></div>
+          </div>
+          <div>
+            <h3 class="card-heading">Strike Zone</h3>
+            <div id="strikeZoneContainer">
+              <div class="pitchChart">
+                <div class="pitchChartHeader"><span>PITCH LOCATION</span></div>
+                <div class="pitchChartField">
+                  <div class="zoneGraphic">
+                    <div class="strikeZoneBox">
+                      <div class="zoneLine vertical"></div>
+                      <div class="zoneLine vertical2"></div>
+                      <div class="zoneLine horizontal"></div>
+                      <div class="zoneLine horizontal2"></div>
+                    </div>
+                    <div class="homePlateGraphic">
+                      <div class="plateTop"></div>
+                      <div class="plateBottom"></div>
+                    </div>
+                    <svg id="strikeZone" viewBox="0 0 500 600" preserveAspectRatio="none"></svg>
+                  </div>
+                </div>
+                <div class="pitchLegend">
+                  <div class="legendItem"><span class="legendDot strike"></span> Strike</div>
+                  <div class="legendItem"><span class="legendDot ball"></span> Ball</div>
+                  <div class="legendItem"><span class="legendDot inPlay"></span> In Play</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+  <script src="js/main.js"></script>
+  <script src="js/gamepage.js"></script>
+</body>
+</html>

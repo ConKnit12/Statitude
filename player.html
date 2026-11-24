@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player | Statitude</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/player.css">
+</head>
+<body class="player-page-body">
+
+  <header class="player-topbar">
+    <a href="#" class="back-link" id="playerBackLink">← Back</a>
+  </header>
+
+  <main class="player-main">
+    <!-- Profile header -->
+    <section class="player-hero card" id="playerHero">
+      <div class="player-hero-loading">Loading player…</div>
+    </section>
+
+    <!-- Season picker + tabs -->
+    <section class="player-controls card">
+      <label for="playerPageSeason">Season</label>
+      <select id="playerPageSeason"></select>
+      <div class="player-tabs" id="playerTabs">
+        <button type="button" class="player-tab active" data-tab="overview">Overview</button>
+        <button type="button" class="player-tab" data-tab="advanced">Advanced</button>
+        <button type="button" class="player-tab" data-tab="yearByYear">Year-by-Year</button>
+        <button type="button" class="player-tab" data-tab="statcast">Statcast</button>
+        <button type="button" class="player-tab" data-tab="charts">Charts</button>
+      </div>
+    </section>
+
+    <section id="tab-overview" class="player-tab-panel active">
+      <div class="card">
+        <h2 class="card-heading">Season Stats</h2>
+        <div id="seasonStatsBlock"></div>
+      </div>
+      <div class="card">
+        <h2 class="card-heading">Career</h2>
+        <div id="careerStatsBlock"></div>
+      </div>
+    </section>
+
+    <section id="tab-advanced" class="player-tab-panel" style="display:none;">
+      <div class="card">
+        <h2 class="card-heading">Situational profile</h2>
+        <p class="chart-note">Splits for the selected season. Sample sizes matter — small PA/IP are noisy.</p>
+        <div id="situationalSummary" class="sit-summary empty-state">Loading splits…</div>
+      </div>
+      <div class="card" id="sitHittingCard">
+        <h2 class="card-heading">Hitting splits</h2>
+        <div id="sitHittingBlock"></div>
+      </div>
+      <div class="card" id="sitPitchingCard" style="display:none;">
+        <h2 class="card-heading">Pitching splits</h2>
+        <div id="sitPitchingBlock"></div>
+      </div>
+      <div class="card" id="pitchTypeCard" style="display:none;">
+        <h2 class="card-heading">Pitch types faced</h2>
+        <p class="chart-note" id="pitchTypeNote">Results by pitch type for the selected season (Statcast).</p>
+        <div id="pitchTypeBlock"></div>
+      </div>
+
+      <div class="card" id="vsTeamsCard">
+        <h2 class="card-heading">vs Teams</h2>
+        <p class="chart-note">Best and worst marks vs opponents this season (min sample). Built from game logs.</p>
+        <div id="vsTeamsBlock" class="empty-state">Loading…</div>
+      </div>
+
+      <div class="card" id="warCard">
+        <h2 class="card-heading">Statitude WAR</h2>
+        <p class="chart-note">Transparent, approximate value metric — not FanGraphs or Baseball-Reference WAR.</p>
+        <div id="warBlock" class="empty-state">Loading…</div>
+      </div>
+
+      <div class="card" id="defenseCard">
+        <h2 class="card-heading">Defense</h2>
+        <p class="chart-note">
+          Official fielding line by position, plus a simple <strong>Statitude Def runs</strong> estimate
+          (errors + range vs a position baseline). Not OAA/DRS — first step into the defense model.
+        </p>
+        <div id="defenseBlock" class="empty-state">Loading…</div>
+      </div>
+
+      <div class="card" id="batSpeedCard" style="display:none;">
+        <h2 class="card-heading">Bat speed &amp; contact</h2>
+        <p class="chart-note">Statcast swings for the selected season.</p>
+        <div id="batSpeedBlock" class="empty-state">Loading…</div>
+      </div>
+    </section>
+
+    <section id="tab-yearByYear" class="player-tab-panel" style="display:none;">
+      <div class="card">
+        <h2 class="card-heading">Year-by-Year</h2>
+        <div id="yearByYearBlock"></div>
+      </div>
+    </section>
+
+    <section id="tab-statcast" class="player-tab-panel" style="display:none;">
+      <div class="card">
+        <h2 class="card-heading">Statcast (season)</h2>
+        <div id="statcastBlock">
+          <p class="empty-state">Loading Statcast…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-charts" class="player-tab-panel" style="display:none;">
+      <div class="card" id="sprayCard">
+        <h2 class="card-heading">Spray Chart</h2>
+        <p class="chart-note">Batted-ball locations (hitters / two-way only).</p>
+        <div id="sprayChartBlock" class="spray-wrap">
+          <svg id="spraySvg" viewBox="0 0 500 500" width="100%" max-width="480"></svg>
+        </div>
+        <div id="sprayDetail" class="spray-detail empty-state">Click a ball to highlight it and see game details.</div>
+      </div>
+      <div class="card" id="zoneProfileCard">
+        <h2 class="card-heading" id="zoneProfileTitle">Strike Zone Profile</h2>
+        <p class="chart-note" id="zoneChartNote">Hitter contact / swing locations in the zone.</p>
+        <div id="zoneProfileBlock" class="zone-wrap">
+          <svg id="zoneSvg" viewBox="0 0 320 400" width="100%" style="max-width:320px"></svg>
+        </div>
+        <div id="zoneDetail" class="spray-detail empty-state">Click a pitch in the zone for details.</div>
+      </div>
+      <div class="card" id="pitchLocCard" style="display:none;">
+        <h2 class="card-heading">Pitch Locations</h2>
+        <p class="chart-note" id="pitchLocNote">Ks, walks, hits, and HRs allowed — location of the pitch that ended the PA.</p>
+        <div class="zone-wrap">
+          <svg id="pitchLocSvg" viewBox="0 0 320 400" width="100%" style="max-width:320px"></svg>
+        </div>
+        <div id="pitchLocDetail" class="spray-detail empty-state">Click a pitch for type, velo, and result.</div>
+      </div>
+      <div class="card" id="pitchArsenalCard" style="display:none;">
+        <h2 class="card-heading">Pitch Arsenal</h2>
+        <p class="chart-note" id="arsenalNote">Usage and velocity by pitch type.</p>
+        <div id="pitchArsenalBlock"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/player.js"></script>
+</body>
+</html>
